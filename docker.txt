@@ -35,21 +35,23 @@ docker run -p 80:80 -p 3000:80 -p 4000:80 -d nginx  = ejecunta un contenedor y e
 docker run -p 80:80 -d --name minginx nginx = el nombre del contenedor se llamara minginx
 docker run -d -p 3307:3306 --name dbmysql -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql = con -e le paso variables de ambiente.
 
-formatear salida de comando PS
+formatear salida de comando PS (documentacion = https://docs.docker.com/engine/reference/commandline/service_ps/#formatting)
 
 docker ps --format="ID\t{{.ID}}" = {{.ID}} = el campo a mostrar 
                                    ID\t    = texto ID con un tabjulado. 
+salida :
 ID      0f3a2d577a7b
 								   
-docker ps --format="ID\t{{.ID}}\nNombre:\t{{.Names}}"   ==> ID\t    = texto ID con un tabjulado. 
-															{{.ID}} = el campo a mostrar 
-															\nNombre:\t = salto delineas + literar "Nombre:" + tabulacion
-													        {{.Names}} = muestra el campo .Names		
-Ejemplo de salida:															
+docker ps --format="ID\t{{.ID}}\nNombre:\t{{.Names}}"   ==> 	ID\t    	= texto ID con un tabjulado. 
+								{{.ID}} 	= el campo a mostrar 
+								\nNombre:\t 	= salto delineas + literar "Nombre:" + tabulacion
+					     			{{.Names}} 	= muestra el campo .Names		
+salida:															
 ID      0f3a2d577a7b
 Nombre: minginx
 
-$ docker ps --format="ID\t{{.ID}}\nNAME\t{{.Names}}\nPORT\t{{.Ports}}\nStatus\t{{.Status}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSize\t{{.Size}}\n"
+docker ps --format="ID\t{{.ID}}\nNAME\t{{.Names}}\nPORT\t{{.Ports}}\nStatus\t{{.Status}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSize\t{{.Size}}\n"
+salida:
 ID      0f3a2d577a7b
 NAME    minginx
 PORT    0.0.0.0:80->80/tcp
@@ -61,4 +63,5 @@ Size    1.12kB (virtual 133MB)
 docker rmi hello-world  = elimina imagen (por el nombre del repositorio)
 docker rmi 7d83a6d8d42d = elimina imagen (por el ID de la imagen)
 
-
+volumenes:
+docker run -d -p 80:80 --name webdocker -v  /usr/share/nginx/html
