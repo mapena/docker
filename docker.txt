@@ -64,4 +64,22 @@ docker rmi hello-world  = elimina imagen (por el nombre del repositorio)
 docker rmi 7d83a6d8d42d = elimina imagen (por el ID de la imagen)
 
 volumenes:
-docker run -d -p 80:80 --name webdocker -v  /usr/share/nginx/html
+-v es para montar un volumen, es decir, asociar un folder del contenedor con un folder de la pc o servidor host.
+donde  : /c/Users/Marcelo-asus-ux501/Desktop/WebDocker es el folder de la PC
+deonde : /usr/share/nginx/html es el folder del contenedor.
+:ro = Significa que el folder /usr/share/nginx/html del contenedor es de solo lectura
+docker run -p 8080:80 --name webdocker -v /c/Users/Marcelo-asus-ux501/Desktop/WebDocker:/usr/share/nginx/html:ro -d nginx
+
+Ahora si ejecutamos la misma linea pero sin el :ro, vemos que desde el contenedor se puede modificar el archivo.
+docker run -p 8080:80 --name webdocker -v /c/Users/Marcelo-asus-ux501/Desktop/WebDocker:/usr/share/nginx/html -d nginx
+
+para acceder al contenedor:
+docker exec -it webdocker bash
+cd /usr/share/nginx/html
+touch salida.txt
+
+y vemos desde el c/Users/Marcelo-asus-ux501/Desktop/WebDocker que existe un archivo llamado salida.txt
+
+
+
+
