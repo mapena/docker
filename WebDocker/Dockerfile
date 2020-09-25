@@ -1,0 +1,9 @@
+FROM nginx:latest
+
+WORKDIR /usr/share/nginx/html
+# /c/Users/Marcelo-asus-ux501/Desktop/WebDocker
+#  PRIMER PUNTO SIGNIFICA EL ORIGEN DE LO QUE VA A COPIAR
+#  SEGUNDO PUNTO SIGNIFICA EL DESTINO, OSEA DONDE ESTA EL WORKDIR Y SE REPRESENTA CON UN .
+
+COPY . .
+
