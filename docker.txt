@@ -1,0 +1,98 @@
+docker 192.168.99.101
+
+docker images 			= Lista las imagenes descargadas.
+docker pull ubuntu 		= descarga la imagen ubuntu
+docker search ubuntu 	= busca las imangenes con el nombre ubuntu
+docker run ubuntu 		= arranco la imagen ubuntu
+docker run ubuntu echo 'hola mundo'  = da por pantalla hola mundo pero lo ejecuta el contenedor.
+docker run -it ubuntu bash 	= ejecuto ubuntu y me abre una consola (bash)iteractiva
+docker ps 					= vemos los contenedores en vuelo
+docker ps -a 				= (all) muestra todo el historial de las ejecuciones docker 
+
+$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                      PORTS               NAMES
+a9ccd5dc8224        ubuntu              "bash"                   11 minutes ago      Exited (0) 4 minutes ago                        upbeat_bohr
+12d7f26b8860        bash                "docker-entrypoint.s…"   12 minutes ago      Created                                         elegant_banach
+432e557fae0a        ubuntu              "-it bash"               12 minutes ago      Created                                         friendly_ardinghelli
+c70037d17198        ubuntu              "echo hola"              14 minutes ago      Exited (0) 14 minutes ago                       keen_newton
+5806721bf555        ubuntu              "/bin/bash"              15 minutes ago      Exited (0) 15 minutes ago                       charming_mirzakhani
+fb84a06d267d        hello-world         "/hello"                 56 minutes ago      Exited (0) 56 minutes ago                       elated_cray
+
+
+docker rm fb84a06d267d 		= deletea el contenedor por el CONTAINER ID
+docker rm elated_cray 		= delete  el contenedor por el NAMES 
+
+docker start <CONTAINER ID> = arranca el contenedor que estaba stopeado.
+docker stop <CONTAINER ID> 	= detiene el contenedor.
+
+              puerto de mi PC (windows) con el que se va a conectar el puerto 80 del conetendor.
+              V    V- puerto 80 que trabaja o expone el contenedor
+docker run -p 3000:80 -d nginx   (el parametro -d es para que no se quede esperando algo y me devuelva elcursor.)
+docker ps -aq  			  	  = me devuelve el contenedor-id de todos los contenedores.
+docker rm $(docker ps -aq)    = borra todos los contenedores menos los que estan en ejecucion.
+docker rm $(docker ps -aq) -f = borra todos los contenedores y los que estan en ejecucion tambien
+docker run -p 80:80 -p 3000:80 -p 4000:80 -d nginx  = ejecunta un contenedor y expone el puerto 80 del contenedor en varios puertos de mi pc (80,3000,4000)
+docker run -p 80:80 -d --name minginx nginx = el nombre del contenedor se llamara minginx
+docker run -d -p 3307:3306 --name dbmysql -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql = con -e le paso variables de ambiente.
+
+formatear salida de comando PS (documentacion = https://docs.docker.com/engine/reference/commandline/service_ps/#formatting)
+
+docker ps --format="ID\t{{.ID}}" = {{.ID}} = el campo a mostrar 
+                                   ID\t    = texto ID con un tabjulado. 
+salida :
+ID      0f3a2d577a7b
+								   
+docker ps --format="ID\t{{.ID}}\nNombre:\t{{.Names}}"   ==> 	ID\t    	= texto ID con un tabjulado. 
+								{{.ID}} 	= el campo a mostrar 
+								\nNombre:\t 	= salto delineas + literar "Nombre:" + tabulacion
+					     			{{.Names}} 	= muestra el campo .Names		
+salida:															
+ID      0f3a2d577a7b
+Nombre: minginx
+
+docker ps --format="ID\t{{.ID}}\nNAME\t{{.Names}}\nPORT\t{{.Ports}}\nStatus\t{{.Status}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSize\t{{.Size}}\n"
+salida:
+ID      0f3a2d577a7b
+NAME    minginx
+PORT    0.0.0.0:80->80/tcp
+Status  Up 8 minutes
+COMMAND "/docker-entrypoint.…"
+CREATED 2020-09-24 09:06:28 -0300 -03
+Size    1.12kB (virtual 133MB)
+
+docker rmi hello-world  = elimina imagen (por el nombre del repositorio)
+docker rmi 7d83a6d8d42d = elimina imagen (por el ID de la imagen)
+
+volumenes:
+-v es para montar un volumen, es decir, asociar un folder del contenedor con un folder de la pc o servidor host.
+donde  : /c/Users/Marcelo-asus-ux501/Desktop/WebDocker es el folder de la PC
+deonde : /usr/share/nginx/html es el folder del contenedor.
+:ro = Significa que el folder /usr/share/nginx/html del contenedor es de solo lectura
+docker run -p 8080:80 --name webdocker -v /c/Users/Marcelo-asus-ux501/Desktop/WebDocker:/usr/share/nginx/html:ro -d nginx
+
+Ahora si ejecutamos la misma linea pero sin el :ro, vemos que desde el contenedor se puede modificar el archivo.
+docker run -p 8080:80 --name webdocker -v /c/Users/Marcelo-asus-ux501/Desktop/WebDocker:/usr/share/nginx/html -d nginx
+
+para acceder al contenedor:
+docker exec -it webdocker bash
+cd /usr/share/nginx/html
+touch salida.txt
+
+y vemos desde el c/Users/Marcelo-asus-ux501/Desktop/WebDocker que existe un archivo llamado salida.txt
+
+docker file : para crear imagenes.
+Dockerfile:
+==========
+FROM nginx:latest
+WORKDIR /usr/share/nginx/html
+COPY /c/Users/Marcelo-asus-ux501/Desktop/WebDocker /usr/share/nginx/html
+
+ahora creamos la imagen myconte. El punto final dice donde esta el docker file.
+docker build -t myconte .
+docker build -t myconte /c/Users/Marcelo-asus-ux501/Desktop/WebDocker
+docker login
+docker build -t mapena/myapp  de esta forma genero una imagen y la subu a dockerhub como mapena/myapp
+docker push mapena/myapp
+
+
+
